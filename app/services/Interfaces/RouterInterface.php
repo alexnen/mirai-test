@@ -2,9 +2,13 @@
 
 namespace App\Services\Interfaces;
 
+use Closure;
+
 interface RouterInterface
 {
-    public function exec(): void;
+    public function exec(): self;
 
-    public function run();
+    public function getNextFunction(array $params): Closure;
+
+    public function getParams(): array;
 }

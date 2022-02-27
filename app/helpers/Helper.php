@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Helpers;
+
 use App\Services\App;
 
 class Helper
@@ -20,5 +22,4 @@ class Helper
 
         return $config;
     }
-
 }

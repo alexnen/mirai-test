@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Services\Interfaces\RouterInterface;
-use Helper;
+use Closure;
+use Exception;
+use App\Helpers\Helper;
 
 class Router implements RouterInterface
 {
@@ -14,7 +16,12 @@ class Router implements RouterInterface
     private function fillRequestData(): void
     {
         $this->method = $_SERVER['REQUEST_METHOD'];
-        $this->urn = $_SERVER['REQUEST_URI'];
+
+        $this->urn = str_replace(
+            $_SERVER['SERVER_NAME'],
+            '',
+            parse_url($_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'])['path']
+        );
     }
 
     private function fillAvailableRoutes(): void
@@ -26,14 +33,29 @@ class Router implements RouterInterface
         }
     }
 
-    public function exec(): void
+    public function exec(): self
     {
         $this->fillRequestData();
         $this->fillAvailableRoutes();
+
+        return $this;
     }
 
-    public function run()
+    public function getNextFunction(array $params): Closure
     {
+        foreach ($this->routes as $routeFile) {
+            if (isset($routeFile[$this->urn])) {
+                $functionName = $routeFile[$this->urn][1];
 
+                return fn() => (new $routeFile[$this->urn][0])->$functionName($params);
+            }
+        }
+
+        throw new Exception('Route not found', 404);
+    }
+
+    public function getParams(): array
+    {
+        return $_REQUEST;
     }
 }

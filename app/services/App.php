@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Services\Interfaces\RouterInterface;
 use Exception;
 
 class App
@@ -54,5 +55,14 @@ class App
     {
         self::updateConfigs();
         self::updateBinds();
+    }
+
+    public static function start(RouterInterface $router)
+    {
+        $params = $router->getParams();
+
+        $methodToStart = $router->getNextFunction($params);
+
+        $methodToStart($params);
     }
 }
