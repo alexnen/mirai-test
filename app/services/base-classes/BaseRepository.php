@@ -47,19 +47,7 @@ class BaseRepository implements RepositoryInterface
         $query = 'select * from "' . $this->model->getTable() . '"';
 
         if ($conditions) {
-            $conditionsQueryString = '';
-
-            foreach ($conditions as $field => $val) {
-                if ($this->model->getFields()[$field] === 'string') {
-                    $val = "'" . $val . "'";
-                }
-
-                $conditionsQueryString .= ' ' . $field . ' = ' . $val . ' and';
-            }
-
-            $conditionsQueryString = substr($conditionsQueryString, 0, -3);
-
-            $query .= ' where ' . $conditionsQueryString;
+            $query .= $this->getConditionString($conditions);
         }
 
         $query .= ' limit 1';
@@ -77,7 +65,6 @@ class BaseRepository implements RepositoryInterface
                 }
             }
         }
-
 
         return $objectItem;
     }
@@ -99,19 +86,7 @@ class BaseRepository implements RepositoryInterface
         $query = 'update "' . $this->model->getTable() . '" set ' . $dataToUpdateQueryString;
 
         if ($conditions) {
-            $conditionsQueryString = '';
-
-            foreach ($conditions as $field => $val) {
-                if ($this->model->getFields()[$field] === 'string') {
-                    $val = "'" . $val . "'";
-                }
-
-                $conditionsQueryString .= ' ' . $field . ' = ' . $val . ' and';
-            }
-
-            $conditionsQueryString = substr($conditionsQueryString, 0, -3);
-
-            $query .= ' where ' . $conditionsQueryString;
+            $query .= $this->getConditionString($conditions);
         }
 
         $this->dbConnector->runQuery($query);
@@ -136,5 +111,26 @@ class BaseRepository implements RepositoryInterface
         $query .= $conditionsQueryString;
 
         $this->dbConnector->runQuery($query);
+    }
+
+    private function getConditionString(array $conditions): string
+    {
+        $conditionsQueryString = '';
+
+        $query = '';
+
+        foreach ($conditions as $field => $val) {
+            if ($this->model->getFields()[$field] === 'string') {
+                $val = "'" . $val . "'";
+            }
+
+            $conditionsQueryString .= ' ' . $field . ' = ' . $val . ' and';
+        }
+
+        $conditionsQueryString = substr($conditionsQueryString, 0, -3);
+
+        $query .= ' where ' . $conditionsQueryString;
+
+        return $query;
     }
 }
