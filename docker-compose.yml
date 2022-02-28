@@ -18,6 +18,12 @@ services:
         volumes:
             - ./.docker/conf/php/php.ini:/usr/local/etc/php/conf.d/php.ini
             - .:/var/www/html
+        environment:
+            - DB_PORT=${DB_PORT}
+            - DB_HOST=${DB_HOST}
+            - DB_NAME=${DB_NAME}
+            - DB_USER=${DB_USER}
+            - DB_PASSWORD=${DB_PASSWORD}
     composer:
         image: composer
         volumes:
@@ -27,6 +33,7 @@ services:
         image: postgres:12
         restart: always
         environment:
+            - POSTGRES_PORT=${DB_PORT}
             - POSTGRES_DB=${DB_NAME}
             - POSTGRES_USER=${DB_USER}
             - POSTGRES_PASSWORD=${DB_PASSWORD}

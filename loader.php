@@ -33,7 +33,7 @@ if (!function_exists('dump')) {
 }
 
 if (!function_exists('dd')) {
-    function dd(...$data) {
+    function dd($data) {
         dump($data);
         exit(0);
     };

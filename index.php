@@ -10,11 +10,10 @@ App::load();
 /** @var \App\Services\Router $router*/
 $router = App::get('router')->exec();
 
-try {
+//try {
     App::start($router);
-} catch (Throwable $e) {
-    echo $e->getMessage();
-
-    exit($e->getCode());
-}
+//} catch (Throwable $e) {
+//    http_response_code($e->getCode());
+//    exit;
+//}
 
